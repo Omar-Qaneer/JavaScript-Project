@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     loadProfileSection();
     loadProjectGallery();
+    initializeFormHandler();
 });
 
 function loadProfileSection() {
@@ -129,4 +130,66 @@ function enableGalleryScroll() {
     });
   });
 }
+
+function initializeFormHandler() {
+  const form = document.getElementById('formSection');
+  const emailField = document.getElementById('contactEmail');
+  const messageField = document.getElementById('contactMessage');
+  const submitBtn = document.getElementById('formsubmit');
+
+  const emailErr = document.getElementById('emailError');
+  const msgErr = document.getElementById('messageError');
+  const countText = document.getElementById('charactersLeft');
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const specialCharCheck = /[^a-zA-Z0-9@._-]/;
+
+  messageField.addEventListener('input', () => {
+    const currentLen = messageField.value.length;
+    countText.textContent = `Characters: ${currentLen}/300`;
+    countText.classList.toggle('error', currentLen > 300);
+    msgErr.textContent = currentLen > 300 ? "Too many characters!" : "";
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let isValid = true;
+
+    emailErr.textContent = "";
+    msgErr.textContent = "";
+
+    const emailValue = emailField.value.trim();
+    const messageValue = messageField.value.trim();
+
+    if (!emailValue) {
+      emailErr.textContent = "Email cannot be empty.";
+      isValid = false;
+    } else if (!emailPattern.test(emailValue)) {
+      emailErr.textContent = "Invalid email format.";
+      isValid = false;
+    } else if (specialCharCheck.test(emailValue)) {
+      emailErr.textContent = "Special characters not allowed in email.";
+      isValid = false;
+    }
+
+    if (!messageValue) {
+      msgErr.textContent = "Message cannot be empty.";
+      isValid = false;
+    } else if (messageValue.length > 300) {
+      msgErr.textContent = "Message must be under 300 characters.";
+      isValid = false;
+    } else if (specialCharCheck.test(messageValue)) {
+      msgErr.textContent = "Message contains forbidden characters.";
+      isValid = false;
+    }
+
+    if (isValid) {
+      alert("Your message has been successfully submitted!");
+      form.reset();
+      countText.textContent = "Characters: 0/300";
+      countText.classList.remove('error');
+    }
+  });
+}
+
 
