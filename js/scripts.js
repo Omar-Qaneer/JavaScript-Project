@@ -103,3 +103,30 @@ function showInSpotlight(project) {
 
   contentHolder.append(title, details, anchor);
 }
+
+function enableGalleryScroll() {
+  const container = document.getElementById('projectList');
+  const left = document.querySelector('.arrow-left');
+  const right = document.querySelector('.arrow-right');
+
+  if (!container || !left || !right) return;
+
+  const scrollAmount = window.matchMedia("(max-width: 767px)").matches ? 320 : 240;
+
+  left.addEventListener('click', () => {
+    container.scrollBy({
+      left: window.innerWidth < 768 ? -scrollAmount : 0,
+      top: window.innerWidth >= 768 ? -scrollAmount : 0,
+      behavior: "smooth"
+    });
+  });
+
+  right.addEventListener('click', () => {
+    container.scrollBy({
+      left: window.innerWidth < 768 ? scrollAmount : 0,
+      top: window.innerWidth >= 768 ? scrollAmount : 0,
+      behavior: "smooth"
+    });
+  });
+}
+
